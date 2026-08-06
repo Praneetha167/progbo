@@ -22,37 +22,45 @@ Type a message in the client window.
 The server receives the message and sends the same message back.
 Continue sending messages until "bye" is entered.
 Both client and server terminate the connection.
-
-Server.java
-import java.io.*;
 import java.net.*;
-
+import java.io.*;
+import java.util.*;
 
 class Server {
     public static void main(String args[]) throws Exception {
 
         ServerSocket ss = new ServerSocket(5000);
-        Socket s = ss.accept();
+        System.out.println("Server is waiting...");
 
-        BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
-        PrintWriter pw = new PrintWriter(s.getOutputStream(), true);
+        Socket s = ss.accept();
+        System.out.println("Client connected.");
+
+        Scanner sc = new Scanner(s.getInputStream());
+        DataOutputStream dos = new DataOutputStream(s.getOutputStream());
 
         String msg;
 
-        while (!(msg = br.readLine()).equals("bye")) {
-            pw.println(msg);
+        while (true) {
+            msg = sc.nextLine();
+
+            if (msg.equals("bye")) {
+                dos.writeBytes("bye\n");
+                break;
+            }
+
+            System.out.println("Client: " + msg);
+            dos.writeBytes(msg + "\n");
         }
 
-        pw.println("bye");
-
+        sc.close();
+        dos.close();
         s.close();
         ss.close();
     }
 }
 
-Client.java
-import java.io.*;
 import java.net.*;
+import java.io.*;
 import java.util.*;
 
 class Client {
@@ -60,20 +68,26 @@ class Client {
 
         Socket s = new Socket("localhost", 5000);
 
-        BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
-        PrintWriter pw = new PrintWriter(s.getOutputStream(), true);
+        Scanner server = new Scanner(s.getInputStream());
+        DataOutputStream dos = new DataOutputStream(s.getOutputStream());
 
-        Scanner sc = new Scanner(System.in);
+        Scanner user = new Scanner(System.in);
 
         String msg;
 
         do {
             System.out.print("Enter: ");
-            msg = sc.nextLine();
-            pw.println(msg);
-            System.out.println("Server: " + br.readLine());
+            msg = user.nextLine();
+
+            dos.writeBytes(msg + "\n");
+
+            System.out.println("Server: " + server.nextLine());
+
         } while (!msg.equals("bye"));
 
+        server.close();
+        user.close();
+        dos.close();
         s.close();
     }
 }
