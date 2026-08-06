@@ -1,0 +1,70 @@
+import java.util.*;
+
+public class SDES {
+
+    static int[] IP = {2,6,3,1,4,8,5,7};
+    static int[] IPI = {4,1,3,5,7,2,8,6};
+
+    static String permute(String s, int p[]) {
+        String r = "";
+        for (int i = 0; i < p.length; i++)
+            r += s.charAt(p[i] - 1);
+        return r;
+    }
+
+    static String xor(String a, String b) {
+        String r = "";
+        for (int i = 0; i < a.length(); i++)
+            r += (a.charAt(i) == b.charAt(i)) ? '0' : '1';
+        return r;
+    }
+
+    public static void main(String args[]) {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter 8-bit Plain Text: ");
+        String pt = sc.next();
+
+        System.out.print("Enter 8-bit Key: ");
+        String key = sc.next();
+
+        String ip = permute(pt, IP);
+
+        String left = ip.substring(0, 4);
+        String right = ip.substring(4);
+
+        String x = xor(right, key.substring(0, 4));
+
+        String sw = right + x;
+
+        left = sw.substring(0, 4);
+        right = sw.substring(4);
+
+        x = xor(right, key.substring(4));
+
+        String pre = left + x;
+
+        String cipher = permute(pre, IPI);
+
+        System.out.println("Encrypted: " + cipher);
+
+        String ip2 = permute(cipher, IP);
+
+        left = ip2.substring(0, 4);
+        right = ip2.substring(4);
+
+        x = xor(right, key.substring(4));
+
+        sw = right + x;
+
+        left = sw.substring(0, 4);
+        right = sw.substring(4);
+
+        x = xor(right, key.substring(0, 4));
+
+        String plain = permute(left + x, IPI);
+
+        System.out.println("Decrypted: " + plain);
+    }
+}
