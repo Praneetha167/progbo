@@ -1,0 +1,79 @@
+1. Write a simple Java program where a client connects to a server and sends text messages.
+The server must read each message and send it straight back until the client types "bye" to close the connection.
+
+Execution Steps
+Create two Java files named Server.java and Client.java.
+Copy the server code into Server.java.
+Copy the client code into Client.java.
+
+Compile both programs:
+
+javac Server.java
+javac Client.java
+
+Open the first terminal and run the server:
+
+java Server
+
+Open another terminal and run the client:
+
+java Client
+Type a message in the client window.
+The server receives the message and sends the same message back.
+Continue sending messages until "bye" is entered.
+Both client and server terminate the connection.
+
+Server.java
+import java.io.*;
+import java.net.*;
+
+
+class Server {
+    public static void main(String args[]) throws Exception {
+
+        ServerSocket ss = new ServerSocket(5000);
+        Socket s = ss.accept();
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+        PrintWriter pw = new PrintWriter(s.getOutputStream(), true);
+
+        String msg;
+
+        while (!(msg = br.readLine()).equals("bye")) {
+            pw.println(msg);
+        }
+
+        pw.println("bye");
+
+        s.close();
+        ss.close();
+    }
+}
+
+Client.java
+import java.io.*;
+import java.net.*;
+import java.util.*;
+
+class Client {
+    public static void main(String args[]) throws Exception {
+
+        Socket s = new Socket("localhost", 5000);
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+        PrintWriter pw = new PrintWriter(s.getOutputStream(), true);
+
+        Scanner sc = new Scanner(System.in);
+
+        String msg;
+
+        do {
+            System.out.print("Enter: ");
+            msg = sc.nextLine();
+            pw.println(msg);
+            System.out.println("Server: " + br.readLine());
+        } while (!msg.equals("bye"));
+
+        s.close();
+    }
+}
