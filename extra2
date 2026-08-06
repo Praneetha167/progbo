@@ -1,0 +1,56 @@
+2. Write a simple Java program where a client sends text messages to a server. 
+The server must change the text to uppercase and send it straight back until the client types "bye" to close the connection.
+
+Server.java
+import java.io.*;
+import java.net.*;
+
+
+class Server {
+    public static void main(String args[]) throws Exception {
+
+        ServerSocket ss = new ServerSocket(5000);
+        Socket s = ss.accept();
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+        PrintWriter pw = new PrintWriter(s.getOutputStream(), true);
+
+        String msg;
+
+        while (!(msg = br.readLine()).equals("bye")) {
+            pw.println(msg.toUpperCase());
+        }
+
+        pw.println("BYE");
+
+        s.close();
+        ss.close();
+    }
+}
+
+Client.java
+----------same code as 1st program client.java
+import java.io.*;
+import java.net.*;
+
+class Server {
+    public static void main(String args[]) throws Exception {
+
+        ServerSocket ss = new ServerSocket(5000);
+        Socket s = ss.accept();
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+        PrintWriter pw = new PrintWriter(s.getOutputStream(), true);
+
+        String msg;
+
+        while (!(msg = br.readLine()).equals("bye")) {
+            pw.println(msg.toUpperCase());
+        }
+
+        pw.println("BYE");
+
+        s.close();
+        ss.close();
+    }
+}
