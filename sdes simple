@@ -1,0 +1,32 @@
+import java.util.Scanner;
+
+public class SDES {
+
+    static String xor(String a, String b) {
+        String result = "";
+        for (int i = 0; i < a.length(); i++) {
+            if (a.charAt(i) == b.charAt(i))
+                result += "0";
+            else
+                result += "1";
+        }
+        return result;
+    }
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter 8-bit Plain Text: ");
+        String plain = sc.next();
+
+        System.out.print("Enter 8-bit Key: ");
+        String key = sc.next();
+
+        String cipher = xor(plain, key);
+        System.out.println("Encrypted Text: " + cipher);
+
+        String decrypted = xor(cipher, key);
+        System.out.println("Decrypted Text: " + decrypted);
+    }
+}
