@@ -1,0 +1,493 @@
+1. Write a program that contains a string (char pointer) with a value ‘Hello world’. The program should XOR and AND each character in this string with 0 and 127, and display the result.
+public class XorAnd {
+    public static void main(String[] args) {
+        String str = "Hello World";
+        System.out.println("Original: " + str);
+        System.out.print("XOR with 0: ");
+        for (int i = 0; i < str.length(); i++) {
+            System.out.print((char)(str.charAt(i) ^ 0));
+        }
+        System.out.print("\nAND with 127: ");
+        for (int i = 0; i < str.length(); i++) {
+            System.out.print((char)(str.charAt(i) & 127));
+        }
+    }
+}
+
+2a. Caeser Cipher
+import java.util.Scanner;
+
+public class CaesarCipher {
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter text (UPPERCASE): ");
+        String text = sc.next();
+
+        System.out.print("Enter key: ");
+        int key = sc.nextInt();
+
+        String enc = "";
+        String dec = "";
+
+        for(int i=0;i<text.length();i++)
+        {
+            char ch = text.charAt(i);
+
+            enc += (char)((ch-'A'+key)%26+'A');
+        }
+
+        System.out.println("Encrypted : "+enc);
+
+        for(int i=0;i<enc.length();i++)
+        {
+            char ch = enc.charAt(i);
+
+            dec += (char)((ch-'A'-key+26)%26+'A');
+        }
+
+        System.out.println("Decrypted : "+dec);
+    }
+}
+
+2b. Hill Cipher
+
+import java.util.Scanner;
+
+public class HillCipher {
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        // Encryption key
+        int key[][] = {
+                {3, 3},
+                {2, 5}
+        };
+
+        // Inverse key matrix (mod 26)
+        int invKey[][] = {
+                {15, 17},
+                {20, 9}
+        };
+
+        System.out.print("Enter Plain Text (UPPERCASE): ");
+        String text = sc.next().toUpperCase();
+
+        // Make length even
+        if (text.length() % 2 != 0)
+            text += "X";
+
+        String cipher = "";
+
+        // ---------- Encryption ----------
+        for (int i = 0; i < text.length(); i += 2) {
+
+            int a = text.charAt(i) - 'A';
+            int b = text.charAt(i + 1) - 'A';
+
+            int c = (key[0][0] * a + key[0][1] * b) % 26;
+            int d = (key[1][0] * a + key[1][1] * b) % 26;
+
+            cipher += (char) (c + 'A');
+            cipher += (char) (d + 'A');
+        }
+
+        System.out.println("Encrypted Text : " + cipher);
+
+        // ---------- Decryption ----------
+        String plain = "";
+
+        for (int i = 0; i < cipher.length(); i += 2) {
+
+            int c = cipher.charAt(i) - 'A';
+            int d = cipher.charAt(i + 1) - 'A';
+
+            int a = (invKey[0][0] * c + invKey[0][1] * d) % 26;
+            int b = (invKey[1][0] * c + invKey[1][1] * d) % 26;
+
+            plain += (char) (a + 'A');
+            plain += (char) (b + 'A');
+        }
+
+        System.out.println("Decrypted Text : " + plain);
+    }
+}
+
+3a. DES algorithm
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import java.util.Base64;
+import java.util.*;
+public class DESExample {
+
+    public static void main(String[] args) throws Exception {
+
+        Scanner sc=new Scanner(System.in);
+        // Generate DES Key
+        KeyGenerator keyGen = KeyGenerator.getInstance("DES");
+        SecretKey key = keyGen.generateKey();
+
+        // Create Cipher
+        Cipher cipher = Cipher.getInstance("DES");
+
+        System.out.print("Enter string: ");
+        String plainText = sc.next();
+
+        // Encryption
+        cipher.init(Cipher.ENCRYPT_MODE, key);
+        byte[] encrypted = cipher.doFinal(plainText.getBytes());
+
+        System.out.println("Original Text  : " + plainText);
+        System.out.println("Encrypted Text : " +
+                Base64.getEncoder().encodeToString(encrypted));
+
+        // Decryption
+        cipher.init(Cipher.DECRYPT_MODE, key);
+        byte[] decrypted = cipher.doFinal(encrypted);
+
+        System.out.println("Decrypted Text : " +
+                new String(decrypted));
+    }
+}
+
+3b. AES algorithm
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import java.util.Base64;
+import java.util.*;
+
+public class AESExample {
+
+    public static void main(String[] args) throws Exception {
+
+        Scanner sc = new Scanner(System.in);
+
+        // Generate AES Key
+        KeyGenerator keyGen = KeyGenerator.getInstance("AES");
+        keyGen.init(128);          // AES Key Size
+        SecretKey key = keyGen.generateKey();
+
+        // Create Cipher
+        Cipher cipher = Cipher.getInstance("AES");
+
+        System.out.print("Enter string: ");
+        String plainText = sc.next();
+
+        // Encryption
+        cipher.init(Cipher.ENCRYPT_MODE, key);
+        byte[] encrypted = cipher.doFinal(plainText.getBytes());
+
+        System.out.println("Original Text  : " + plainText);
+        System.out.println("Encrypted Text : "
+                + Base64.getEncoder().encodeToString(encrypted));
+
+        // Decryption
+        cipher.init(Cipher.DECRYPT_MODE, key);
+        byte[] decrypted = cipher.doFinal(encrypted);
+
+        System.out.println("Decrypted Text : "
+                + new String(decrypted));
+    }
+}
+
+3c. Blowfish
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import java.util.Base64;
+import java.util.*;
+
+public class BlowfishExample {
+
+    public static void main(String[] args) throws Exception {
+
+        Scanner sc = new Scanner(System.in);
+
+        // Generate Blowfish Key
+        KeyGenerator keyGen = KeyGenerator.getInstance("Blowfish");
+        SecretKey key = keyGen.generateKey();
+
+        // Create Cipher
+        Cipher cipher = Cipher.getInstance("Blowfish");
+
+        System.out.print("Enter string: ");
+        String plainText = sc.next();
+
+        // Encryption
+        cipher.init(Cipher.ENCRYPT_MODE, key);
+        byte[] encrypted = cipher.doFinal(plainText.getBytes());
+
+        System.out.println("Original Text  : " + plainText);
+        System.out.println("Encrypted Text : "
+                + Base64.getEncoder().encodeToString(encrypted));
+
+        // Decryption
+        cipher.init(Cipher.DECRYPT_MODE, key);
+        byte[] decrypted = cipher.doFinal(encrypted);
+
+        System.out.println("Decrypted Text : "
+                + new String(decrypted));
+    }
+}
+
+3d. RC4 algorithm ------If RC4 gives error replace it with "ARCFOUR" everywhere in code in place of RC4
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import java.util.Base64;
+import java.util.*;
+
+public class RC4Example {
+
+    public static void main(String[] args) throws Exception {
+
+        Scanner sc = new Scanner(System.in);
+
+        // Generate RC4 Key
+        KeyGenerator keyGen = KeyGenerator.getInstance("RC4");
+        SecretKey key = keyGen.generateKey();
+
+        // Create Cipher
+        Cipher cipher = Cipher.getInstance("RC4");
+
+        System.out.print("Enter string: ");
+        String plainText = sc.next();
+
+        // Encryption
+        cipher.init(Cipher.ENCRYPT_MODE, key);
+        byte[] encrypted = cipher.doFinal(plainText.getBytes());
+
+        System.out.println("Original Text  : " + plainText);
+        System.out.println("Encrypted Text : "
+                + Base64.getEncoder().encodeToString(encrypted));
+
+        // Decryption
+        cipher.init(Cipher.DECRYPT_MODE, key);
+        byte[] decrypted = cipher.doFinal(encrypted);
+
+        System.out.println("Decrypted Text : "
+                + new String(decrypted));
+    }
+}
+
+
+Extra programs:
+1. Write a simple Java program where a client connects to a server and sends text messages.
+The server must read each message and send it straight back until the client types "bye" to close the connection.
+
+Execution Steps
+Create two Java files named Server.java and Client.java.
+Copy the server code into Server.java.
+Copy the client code into Client.java.
+
+Compile both programs:
+
+javac Server.java
+javac Client.java
+
+Open the first terminal and run the server:
+
+java Server
+
+Open another terminal and run the client:
+
+java Client
+Type a message in the client window.
+The server receives the message and sends the same message back.
+Continue sending messages until "bye" is entered.
+Both client and server terminate the connection.
+
+Server.java
+import java.io.*;
+import java.net.*;
+
+
+class Server {
+    public static void main(String args[]) throws Exception {
+
+        ServerSocket ss = new ServerSocket(5000);
+        Socket s = ss.accept();
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+        PrintWriter pw = new PrintWriter(s.getOutputStream(), true);
+
+        String msg;
+
+        while (!(msg = br.readLine()).equals("bye")) {
+            pw.println(msg);
+        }
+
+        pw.println("bye");
+
+        s.close();
+        ss.close();
+    }
+}
+
+Client.java
+import java.io.*;
+import java.net.*;
+import java.util.*;
+
+class Client {
+    public static void main(String args[]) throws Exception {
+
+        Socket s = new Socket("localhost", 5000);
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+        PrintWriter pw = new PrintWriter(s.getOutputStream(), true);
+
+        Scanner sc = new Scanner(System.in);
+
+        String msg;
+
+        do {
+            System.out.print("Enter: ");
+            msg = sc.nextLine();
+            pw.println(msg);
+            System.out.println("Server: " + br.readLine());
+        } while (!msg.equals("bye"));
+
+        s.close();
+    }
+}
+
+2. Write a simple Java program where a client sends text messages to a server. 
+The server must change the text to uppercase and send it straight back until the client types "bye" to close the connection.
+
+Server.java
+import java.io.*;
+import java.net.*;
+
+
+class Server {
+    public static void main(String args[]) throws Exception {
+
+        ServerSocket ss = new ServerSocket(5000);
+        Socket s = ss.accept();
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+        PrintWriter pw = new PrintWriter(s.getOutputStream(), true);
+
+        String msg;
+
+        while (!(msg = br.readLine()).equals("bye")) {
+            pw.println(msg.toUpperCase());
+        }
+
+        pw.println("BYE");
+
+        s.close();
+        ss.close();
+    }
+}
+
+Client.java
+----------same code as 1st program client.java
+import java.io.*;
+import java.net.*;
+
+class Server {
+    public static void main(String args[]) throws Exception {
+
+        ServerSocket ss = new ServerSocket(5000);
+        Socket s = ss.accept();
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+        PrintWriter pw = new PrintWriter(s.getOutputStream(), true);
+
+        String msg;
+
+        while (!(msg = br.readLine()).equals("bye")) {
+            pw.println(msg.toUpperCase());
+        }
+
+        pw.println("BYE");
+
+        s.close();
+        ss.close();
+    }
+}
+
+3. Simple DES
+import java.util.*;
+
+public class SDES {
+
+    static int[] IP = {2,6,3,1,4,8,5,7};
+    static int[] IPI = {4,1,3,5,7,2,8,6};
+
+    static String permute(String s, int p[]) {
+        String r = "";
+        for(int i=0;i<p.length;i++)
+            r += s.charAt(p[i]-1);
+        return r;
+    }
+
+    static String xor(String a,String b){
+        String r="";
+        for(int i=0;i<a.length();i++)
+            r+=(a.charAt(i)==b.charAt(i))?'0':'1';
+        return r;
+    }
+
+    public static void main(String args[]) {
+
+        Scanner sc=new Scanner(System.in);
+
+        System.out.print("Enter 8-bit Plain Text: ");
+        String pt=sc.next();
+
+        System.out.print("Enter 8-bit Key: ");
+        String key=sc.next();
+
+        // Initial Permutation
+        String ip=permute(pt,IP);
+
+        // fk using key (simplified)
+        String left=ip.substring(0,4);
+        String right=ip.substring(4);
+
+        String x=xor(right,key.substring(0,4));
+
+        // Swap
+        String sw=right+x;
+
+        // fk using second key (simplified)
+        left=sw.substring(0,4);
+        right=sw.substring(4);
+
+        x=xor(right,key.substring(4));
+
+        String pre=left+x;
+
+        // Inverse IP
+        String cipher=permute(pre,IPI);
+
+        System.out.println("Encrypted: "+cipher);
+
+        // Decryption
+        String ip2=permute(cipher,IP);
+
+        left=ip2.substring(0,4);
+        right=ip2.substring(4);
+
+        x=xor(right,key.substring(4));
+
+        sw=right+x;
+
+        left=sw.substring(0,4);
+        right=sw.substring(4);
+
+        x=xor(right,key.substring(0,4));
+
+        String plain=permute(left+x,IPI);
+
+        System.out.println("Decrypted: "+plain);
+    }
+}
