@@ -1,0 +1,75 @@
+Step 1: Generate a Blowfish key
+Open Command Prompt or the VS Code terminal and run:
+keytool -genseckey -alias blowfishkey -keyalg Blowfish -keysize 128 -keystore blowfish.jceks -storetype JCEKS
+
+
+Enter and confirm a keystore password when prompted. If prompted for a key password, you can use the same password.
+
+This creates blowfish.jceks, which stores your secret key.
+Step 2: Create the Java encryption program
+Create a file named BlowfishEncryption.java in VS Code.
+
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import java.security.KeyStore;
+import java.util.Base64;
+
+public class BlowfishEncryption {
+    public static void main(String[] args) throws Exception {
+
+        // Load the keystore
+        KeyStore ks = KeyStore.getInstance("JCEKS");
+        char[] password = System.console() != null
+                ? System.console().readPassword("Keystore password: ")
+                : new java.util.Scanner(System.in)
+                    .nextLine().toCharArray();
+
+        try (java.io.FileInputStream fis =
+                     new java.io.FileInputStream("blowfish.jceks")) {
+            ks.load(fis, password);
+        }
+
+        // Retrieve the Blowfish secret key
+        KeyStore.ProtectionParameter protection =
+                new KeyStore.PasswordProtection(password);
+        KeyStore.SecretKeyEntry entry =
+                (KeyStore.SecretKeyEntry) ks.getEntry(
+                        "blowfishkey", protection);
+        SecretKey key = entry.getSecretKey();
+
+        // Encrypt the message
+        String message = "Hello world";
+        Cipher cipher = Cipher.getInstance("Blowfish");
+        cipher.init(Cipher.ENCRYPT_MODE, key);
+
+        byte[] encrypted = cipher.doFinal(
+                message.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+
+        String encryptedText =
+                Base64.getEncoder().encodeToString(encrypted);
+
+        System.out.println("Original text: " + message);
+        System.out.println("Encrypted text: " + encryptedText);
+    }
+}
+
+
+
+Step 3: Compile and run
+Run these commands in the terminal from the folder containing both files:
+javac BlowfishEncryption.java
+java BlowfishEncryption
+
+
+Enter the keystore password you created in Step 1.
+
+Your output will look like this:
+Keystore password:
+Original text: Hello world
+Encrypted text: <Base64-encoded ciphertext>
+
+
+The encrypted value will vary because the key is randomly generated.
+Step 4: Verify the key
+You can check that your key is stored in the keystore with:
+keytool -list -v -keystore blowfish.jceks -storetype JCEKS
