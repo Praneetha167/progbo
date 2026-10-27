@@ -1,0 +1,88 @@
+
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import javax.crypto.Cipher;
+import java.util.Base64;
+
+public class prog5 {
+    public static void main(String[] args) throws Exception {
+
+        String message = "Hello world";
+
+        // Generate RSA key pair
+        KeyPairGenerator generator =
+                KeyPairGenerator.getInstance("RSA");
+        generator.initialize(2048);
+        KeyPair pair = generator.generateKeyPair();
+
+        Cipher cipher = Cipher.getInstance(
+                "RSA/ECB/OAEPWithSHA-256AndMGF1Padding");
+
+        // Encrypt using the public key
+        cipher.init(Cipher.ENCRYPT_MODE, pair.getPublic());
+        byte[] encrypted = cipher.doFinal(
+                message.getBytes("UTF-8"));
+
+        String encryptedText = Base64.getEncoder()
+                .encodeToString(encrypted);
+
+        System.out.println("Original Text: " + message);
+        System.out.println("Encrypted Text: " + encryptedText);
+
+        // Decrypt using the private key
+        cipher.init(Cipher.DECRYPT_MODE, pair.getPrivate());
+        byte[] decrypted = cipher.doFinal(encrypted);
+
+        System.out.println("Decrypted Text: "
+                + new String(decrypted, "UTF-8"));
+    }
+}
+
+--------------------------------------------------------------------------
+
+
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import javax.crypto.Cipher;
+import java.util.Base64;
+import java.util.Scanner;
+
+public class prog5 {
+    public static void main(String[] args) throws Exception {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter the message: ");
+        String message = sc.nextLine();
+
+        // Generate RSA key pair
+        KeyPairGenerator generator =
+                KeyPairGenerator.getInstance("RSA");
+        generator.initialize(2048);
+        KeyPair pair = generator.generateKeyPair();
+
+        Cipher cipher = Cipher.getInstance(
+                "RSA/ECB/OAEPWithSHA-256AndMGF1Padding");
+
+        // Encrypt using public key
+        cipher.init(Cipher.ENCRYPT_MODE, pair.getPublic());
+        byte[] encrypted = cipher.doFinal(
+                message.getBytes("UTF-8"));
+
+        String encryptedText = Base64.getEncoder()
+                .encodeToString(encrypted);
+
+        System.out.println("Original Text: " + message);
+        System.out.println("Encrypted Text: " + encryptedText);
+
+        // Decrypt using private key
+        cipher.init(Cipher.DECRYPT_MODE, pair.getPrivate());
+        byte[] decrypted = cipher.doFinal(encrypted);
+
+        System.out.println("Decrypted Text: "
+                + new String(decrypted, "UTF-8"));
+
+        sc.close();
+    }
+}
+
