@@ -73,4 +73,115 @@ e.printStackTrace();
 }
 }
 
-Compile and run the above code in command
+Compile and run the above code in command 
+----------------------------------------------------------------------------------------
+
+None selected 
+
+Skip to content
+Using BVRITHYDERABAD Mail with screen readers
+sarath 
+
+2 of 21
+Fwd: Blowfish Program
+Inbox
+
+Dr R Sarath Babu <sarathbabu.r@bvrithyderabad.edu.in>
+Attachments
+Sep 3, 2026, 11:17 AM
+to cse23c, cse23a
+
+
+
+---------- Forwarded message ---------
+From: Dr R Sarath Babu <sarathbabu.r@bvrithyderabad.edu.in>
+Date: Tue, Aug 25, 2026 at 10:11 AM
+Subject: Blowfish Program
+To: <cse23b@bvrithyderabad.edu.in>
+
+
+
+
+--
+Dr. R Sarath Babu, B.Tech., M.Tech., Ph.D.(OU) 
+Assistant Professor, 
+Department of CSE,
+BVRIT HYDERABAD College of Engineering for Women (UGC Autonomous | NAAC Accredited – A Grade | NBA Accredited)
+✉️ : sarathbabu.r@bvrithyderabad.edu.in
+ 📱 : +91-9701771010 
+ 📍 : Bachupally, Hyderabad - 500 090. 
+
+
+--
+Dr. R Sarath Babu, B.Tech., M.Tech., Ph.D.(OU) 
+Assistant Professor, 
+Department of CSE,
+BVRIT HYDERABAD College of Engineering for Women (UGC Autonomous | NAAC Accredited – A Grade | NBA Accredited)
+✉️ : sarathbabu.r@bvrithyderabad.edu.in
+ 📱 : +91-9701771010 
+ 📍 : Bachupally, Hyderabad - 500 090. 
+ 3 Attachments
+  •  Scanned by Gmail
+import java.io.File;
+import java.io.FileInputStream;
+import java.security.KeyStore;
+import java.util.Base64;
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+
+public class EncryptWithKeytoolKey {
+    public static void main(String[] args) {
+        String plainText = "Hello world";
+        
+        // FIX: Use the explicit, absolute path to your generated keystore file
+        String keystorePath = "C:\\Java\\jdk1.8.0_261\\bin\\mykeystore.jceks"; 
+        String keystorePassword = "mypassword";
+        String keyAlias = "myblowfishkey";
+
+        try {
+            // Safety Check: Verify the file actually exists where Java is looking
+            File ksFile = new File(keystorePath);
+            if (!ksFile.exists()) {
+                System.out.println("ERROR: Keystore file not found at: " + ksFile.getAbsolutePath());
+                return;
+            }
+
+            // 1. Load the JCEKS Keystore
+            KeyStore keyStore = KeyStore.getInstance("JCEKS");
+            try (FileInputStream fis = new FileInputStream(ksFile)) {
+                keyStore.load(fis, keystorePassword.toCharArray());
+            }
+
+            // 2. Extract the Blowfish Secret Key
+            KeyStore.ProtectionParameter protectionParam = 
+                    new KeyStore.PasswordProtection(keystorePassword.toCharArray());
+            KeyStore.SecretKeyEntry secretKeyEntry = 
+                    (KeyStore.SecretKeyEntry) keyStore.getEntry(keyAlias, protectionParam);
+            
+            if (secretKeyEntry == null) {
+                System.out.println("Error: Key alias '" + keyAlias + "' not found in keystore!");
+                return;
+            }
+            
+            SecretKey secretKey = secretKeyEntry.getSecretKey();
+
+            // 3. Initialize the Cipher for Blowfish
+            Cipher cipher = Cipher.getInstance("Blowfish");
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+
+            // 4. Perform the Encryption
+            byte[] encryptedBytes = cipher.doFinal(plainText.getBytes("UTF-8"));
+            String encryptedText = Base64.getEncoder().encodeToString(encryptedBytes);
+
+            // 5. Print Results
+            System.out.println("--- Blowfish Keytool Encryption Success ---");
+            System.out.println("Original Text : " + plainText);
+            System.out.println("Encrypted Text: " + encryptedText);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+EncryptWithKeytoolKey.java
+Page 2 of 4 Page 3 of 4 Page 4 of 4
