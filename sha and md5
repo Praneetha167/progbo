@@ -1,0 +1,38 @@
+
+import java.security.MessageDigest;
+import java.util.Scanner;
+
+public class MessageDigestExample {
+
+    public static void main(String[] args) throws Exception {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter the text: ");
+        String text = sc.nextLine();
+
+        // SHA-512 Message Digest
+        MessageDigest sha = MessageDigest.getInstance("SHA-512");
+        byte[] shaBytes = sha.digest(text.getBytes("UTF-8"));
+
+        StringBuilder shaResult = new StringBuilder();
+        for (byte b : shaBytes) {
+            shaResult.append(String.format("%02x", b & 0xff));
+        }
+
+        System.out.println("SHA-512 Digest: " + shaResult);
+
+        // MD5 Message Digest
+        MessageDigest md5 = MessageDigest.getInstance("MD5");
+        byte[] md5Bytes = md5.digest(text.getBytes("UTF-8"));
+
+        StringBuilder md5Result = new StringBuilder();
+        for (byte b : md5Bytes) {
+            md5Result.append(String.format("%02x", b & 0xff));
+        }
+
+        System.out.println("MD5 Digest: " + md5Result);
+
+        sc.close();
+    }
+}
