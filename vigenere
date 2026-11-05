@@ -1,0 +1,49 @@
+import java.util.Scanner;
+
+public class Vigenere {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Enter plaintext:");
+        String str = sc.nextLine().toUpperCase();
+
+        System.out.println("Enter key:");
+        String key = sc.nextLine().toUpperCase();
+
+        String encrypted = "";
+        String decrypted = "";
+
+        // Encryption
+        for (int i = 0; i < str.length(); i++) {
+            char ch = str.charAt(i);
+            char k = key.charAt(i % key.length());
+
+            if (ch >= 'A' && ch <= 'Z') {
+                encrypted += (char)((ch - 'A' + k - 'A') % 26 + 'A');
+            }
+            else {
+                encrypted += ch;
+            }
+        }
+
+        // Decryption
+        int j = 0;
+
+        for (int i = 0; i < encrypted.length(); i++) {
+            char ch = encrypted.charAt(i);
+
+            if (ch >= 'A' && ch <= 'Z') {
+                char k = key.charAt(j % key.length());
+
+                decrypted += (char)((ch - 'A' - (k - 'A') + 26) % 26 + 'A');
+                j++;
+            }
+            else {
+                decrypted += ch;
+            }
+        }
+
+        System.out.println("Encrypted: " + encrypted);
+        System.out.println("Decrypted: " + decrypted);
+    }
+}
